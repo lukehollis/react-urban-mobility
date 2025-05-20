@@ -7,7 +7,7 @@ interface Agent {
   id: string;
   position: [number, number]; // [lat, lng]
   type: number;
-  is_fleeing?: boolean;
+  is_fleeing: boolean;
   // Add other relevant properties you might want to display or use for styling
 }
 

@@ -17,7 +17,7 @@ interface Agent {
   id: string;
   position: [number, number]; // [lat, lng]
   type: number; // 0: pedestrian, 1: vehicle
-  is_fleeing?: boolean;
+  is_fleeing: boolean;
   path_coords?: [number, number, number][] | null; // [lat, lng, elevation] from server
   currentPathIndex?: number;
   goal?: [number, number]; // Store the final goal for path requests
@@ -99,18 +99,18 @@ function App() {
         switch (message.type) {
           case 'add_agent':
             {
-              const agent = message.payload as Agent;
+              const agentPayload = message.payload as Omit<Agent, 'currentPathIndex' | 'lastPathRequestTime'>; // Payload matches API more closely
               setAgents(prevAgents => ({
                 ...prevAgents,
-                [agent.id]: {
-                  ...agent,
-                  currentPathIndex: (agent.path_coords && agent.path_coords.length > 0) ? 0 : undefined,
+                [agentPayload.id]: {
+                  ...agentPayload, // is_fleeing is now definitely part of agentPayload
+                  currentPathIndex: (agentPayload.path_coords && agentPayload.path_coords.length > 0) ? 0 : undefined,
                   lastPathRequestTime: 0,
                 },
               }));
               // Set initial map center to the first agent's position if not already set by focus
-              if (!initialCenterSet.current && agent.position && agent.position.length === 2) {
-                setMapCenter([agent.position[0], agent.position[1]]);
+              if (!initialCenterSet.current && agentPayload.position && agentPayload.position.length === 2) {
+                setMapCenter([agentPayload.position[0], agentPayload.position[1]]);
                 initialCenterSet.current = true; 
               }
             }
@@ -120,7 +120,7 @@ function App() {
             break;
           case 'new_path':
             {
-              const pathData = message.payload as { agent_id: string; goal: [number, number]; path_coords: [number,number,number][]; is_fleeing?: boolean };
+              const pathData = message.payload as { agent_id: string; goal: [number, number]; path_coords: [number,number,number][] | null; is_fleeing: boolean }; // is_fleeing is now boolean, path_coords can be null
               setAgents(prev => {
                 if (!prev[pathData.agent_id]) return prev;
                 return {
@@ -130,7 +130,7 @@ function App() {
                     goal: pathData.goal,
                     path_coords: pathData.path_coords,
                     currentPathIndex: (pathData.path_coords && pathData.path_coords.length > 0) ? 0 : undefined,
-                    is_fleeing: pathData.is_fleeing ?? prev[pathData.agent_id].is_fleeing,
+                    is_fleeing: pathData.is_fleeing, // Simplified assignment
                     // lastPathRequestTime is updated by the requestNewPath function itself
                   }
                 };
