@@ -1,7 +1,8 @@
 
 
 
-https://github.com/user-attachments/assets/dd443b99-7d10-4b0d-b1a0-fde682d3d23d
+https://github.com/user-attachments/assets/119a45b3-50c4-41fe-9e55-5cf4204eff30
+
 
 
 
@@ -12,6 +13,14 @@ This is a basic React application (bootstrapped with Vite and TypeScript) that d
 This is an example application that connects to the Urban Mobility server MARL API and accessible (defaults to `wss://urban-marl.mused.com/ws/marl_state`).
 
 I've been using this for my research for creating simulations of human behaviors in geospatial environments. I hope to continue to extend it with more features in the future. 
+
+
+This repo is a basic example for usage on a map -- and has a 2d example. Each agent will return elevation data, but you don't have to use it. 
+
+
+
+https://github.com/user-attachments/assets/e2b5f322-0b8d-4b42-b20c-825a1341c017
+
 
 
 ## Setup & Running
